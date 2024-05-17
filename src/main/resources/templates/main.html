@@ -1,0 +1,694 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <script type="text/javascript" th:src="@{/js/main.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-1.7.2.min.js}"></script>
+</head>
+<body>
+<div class="app-container">
+    <div class="app-header">
+        <div class="app-header-left">
+            <span class="app-icon"></span>
+            <p class="app-name">应急决策支持系统</p>
+            <div class="search-wrapper">
+                <form th:action="@{/searchCategory}" method="post">
+                    <input class="search-input" type="text" name="category" placeholder="事件类型如：新冠肺炎">
+                </form>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-search" viewBox="0 0 24 24">
+                    <defs></defs>
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="M21 21l-4.35-4.35"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="app-header-right">
+            <button class="mode-switch" title="Switch Theme">
+                <svg class="moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="24" height="24" viewBox="0 0 24 24">
+                    <defs></defs>
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                </svg>
+            </button>
+            <button class="add-btn" title="Add New Project">
+                <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                      fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus btn-icon">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" /></svg>
+            </button>
+            <button class="notification-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>
+            </button>
+<!--            /{id}(id=${session.user.getUserId()})-->
+            <a th:href="@{/personal}" style="text-decoration: none;">
+                <button class="profile-btn">
+                    <img th:src="'/upload/'+${session.user.getHeadImg()}"/>
+                    <span th:text="${session.user.username}"></span>
+                </button>
+            </a>
+        </div>
+        <button class="messages-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-circle">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg>
+        </button>
+    </div>
+    <div class="app-content">
+        <div class="app-sidebar">
+            <a th:href="@{/main}" class="app-sidebar-link active" title="方案总览">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="24" height="24" viewBox="0 0 24 24"  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" /></svg>
+            </a>
+            <a th:href="@{/plan}" class="app-sidebar-link" title="查看方案">
+                <svg t="1647505367791"  class="feather feather-home" width="24" height="24" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1898">
+                    <path d="M187.891082 1023.744192c-40.673495 0-73.672745-32.999251-73.672746-73.672746v-741.843617c0-40.673495 32.999251-73.672745 73.672746-73.672745h30.952785c1.279041-36.324756 31.72021-65.742693 68.300775-65.742693l59.859105-1.534849c0.767424-37.092181 31.208594-67.277542 68.556583-67.277542H611.765176c37.859605 0 68.556583 30.696977 68.556583 68.556583v0.255808h56.533599c36.580565 0 67.021734 29.417937 68.300775 65.742693h30.952785c19.697227 0 38.115413 7.674244 52.184862 21.743692 13.81364 14.069448 21.487884 32.487634 21.487884 52.184861v741.843618c0 40.673495-32.999251 73.672745-73.672746 73.672745H187.891082v-0.255808z m0.255808-822.678991c-3.837122 0-7.162628 3.325506-7.162628 7.162628v741.843617c0 3.837122 3.325506 7.162628 7.162628 7.162628h647.962028c3.837122 0 7.162628-3.325506 7.162628-7.162628v-741.843617c0-3.837122-3.325506-7.162628-7.162628-7.162628h-30.952785v15.092681c0 37.859605-30.696977 68.556583-68.556583 68.556582H287.656258c-37.859605 0-68.556583-30.696977-68.556583-68.556582v-15.092681H188.14689z m97.462903 15.092681c0 1.023233 1.023233 1.790657 2.046465 1.790657h449.1991c0.767424 0 1.790657-0.767424 1.790657-1.790657v-79.300525c0-1.023233-0.767424-1.790657-1.790657-1.790657h-89.788658c-18.418186 0-33.255059-14.836872-33.255059-33.255059V68.300774c0-1.023233-0.767424-1.790657-1.790657-1.790657h-196.204846c-0.767424 0-1.790657 0.767424-1.790657 1.790657v33.510867c0 18.418186-14.836872 33.255059-33.255059 33.255059h-92.858356c-1.023233 0-2.046465 0.767424-2.046465 1.790657 0 0.255808 0 0.511616-0.255808 0.511616v78.788909z" p-id="1899"></path><path d="M338.817887 793.516862c-19.185611 0-34.534099-15.604297-34.5341-34.534099 0-19.185611 15.604297-34.534099 34.5341-34.534099h182.647014c19.185611 0 34.534099 15.604297 34.5341 34.534099 0 19.185611-15.604297 34.534099-34.5341 34.534099h-182.647014z m0-173.437921c-19.185611 0-34.534099-15.604297-34.5341-34.5341s15.604297-34.534099 34.5341-34.534099H688.507619c19.185611 0 34.534099 15.604297 34.5341 34.534099s-15.604297 34.534099-34.5341 34.5341H338.817887z m0-166.78691c-19.185611 0-34.534099-15.604297-34.5341-34.534099s15.604297-34.534099 34.5341-34.5341H688.507619c19.185611 0 34.534099 15.604297 34.5341 34.5341s-15.604297 34.534099-34.5341 34.534099H338.817887z" p-id="1900"></path></svg>                    <defs />
+
+            </a>
+            <a th:href="@{/match}" class="app-sidebar-link" title="方案匹配">
+                <svg t="1647505461547" class="icon" width="24"  height="24" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14904" >
+                    <path d="M730.229508 1024H142.688525c-39.340066 0-71.344262-32.004197-71.344263-71.344262V385.397508a20.983607 20.983607 0 0 1 41.967213 0V952.655738c0 16.195148 13.177705 29.377049 29.37705 29.377049h587.540983c16.195148 0 29.377049-13.181902 29.377049-29.377049V167.868852c0-16.199344-13.181902-29.377049-29.377049-29.377049H142.688525c-16.199344 0-29.377049 13.177705-29.37705 29.377049v96.524591a20.983607 20.983607 0 0 1-41.967213 0V167.868852c0-39.340066 32.004197-71.344262 71.344263-71.344262h587.540983c39.340066 0 71.344262 32.004197 71.344262 71.344262v784.786886c0 39.340066-32.004197 71.344262-71.344262 71.344262z" p-id="14905"></path><path d="M881.311475 927.47541h-100.721311a20.983607 20.983607 0 0 1-20.983607-20.983607V167.868852c0-16.199344-13.181902-29.377049-29.377049-29.377049H243.409836a20.983607 20.983607 0 0 1-20.983606-20.983606V71.344262c0-39.340066 32.004197-71.344262 71.344262-71.344262h587.540983c39.340066 0 71.344262 32.004197 71.344263 71.344262v784.786886c0 39.340066-32.004197 71.344262-71.344263 71.344262z m-79.737705-41.967213h79.737705c16.195148 0 29.377049-13.181902 29.37705-29.377049V71.344262c0-16.199344-13.181902-29.377049-29.37705-29.377049H293.770492c-16.199344 0-29.377049 13.177705-29.377049 29.377049v25.180328h465.836065c39.340066 0 71.344262 32.004197 71.344262 71.344262v717.639345z" p-id="14906"></path><path d="M648.393443 285.377049H193.04918a20.983607 20.983607 0 0 1 0-41.967213h455.344263a20.983607 20.983607 0 1 1 0 41.967213z" p-id="14907"></path><path d="M648.393443 444.852459H193.04918a20.983607 20.983607 0 0 1 0-41.967213h455.344263a20.983607 20.983607 0 1 1 0 41.967213z" p-id="14908"></path><path d="M648.393443 604.327869H193.04918a20.983607 20.983607 0 1 1 0-41.967213h455.344263c11.591344 0 20.983607 9.392262 20.983606 20.983606s-9.392262 20.983607-20.983606 20.983607z" p-id="14909"></path><path d="M512 763.803279H193.04918a20.983607 20.983607 0 1 1 0-41.967213h318.95082c11.591344 0 20.983607 9.392262 20.983607 20.983606s-9.392262 20.983607-20.983607 20.983607z" p-id="14910"></path><path d="M470.032787 940.065574a20.96682 20.96682 0 0 1-15.649574-7.008525l-104.918033-117.508197a20.983607 20.983607 0 0 1 31.303345-27.95436l89.146754 99.844197 198.395803-225.628328a20.983607 20.983607 0 1 1 31.517377 27.715147l-214.032787 243.409836a21.000393 21.000393 0 0 1-15.678951 7.126033L470.032787 940.065574z" p-id="14911"></path></svg>                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" /></svg>
+            </a>
+            <a th:href="@{/info}" class="app-sidebar-link" title="新闻信息">
+                <svg t="1647507840721"  class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3794" width="24" height="24"><path d="M998.592 544.32l-138.112-440.576L156.16 253.12l33.088 109.504L24 406.272c0 0 77.12 245.888 127.872 408.064 50.816 162.048 173.504 85.12 173.504 85.12s532.288-223.872 613.12-257.984C1014.784 609.472 998.592 544.32 998.592 544.32zM207.808 787.264 102.656 452.032l106.24-24.576 129.344 433.344 45.312-27.52C239.424 910.656 207.808 787.264 207.808 787.264zM918.464 605.504c0 0-101.184 39.232-219.008 87.552L623.872 452.096 376.448 529.344l83.52 266.624c-24.64 11.52-46.784 22.144-65.28 31.616L265.216 414.528l0 0L229.12 299.072l614.528-141.504c0 0 95.232 304.384 114.048 364.352S918.464 605.504 918.464 605.504z" p-id="3795"></path><path d="M880.576 386.24 675.2 451.392 691.264 502.784 895.552 433.92Z" p-id="3796"></path><path d="M701.504 535.424 717.504 586.752 920 511.936 905.024 464.256Z" p-id="3797"></path><path d="M418.048 306.24l12.992 41.344c6.72 21.44 13.44 40.448 21.184 58.688L451.776 406.4c-11.712-14.144-25.6-29.632-39.04-42.368l-47.424-44.8L325.056 329.216l45.824 146.24 31.296-9.28L388.48 422.528c-7.36-23.68-14.208-43.904-21.312-62.912L368 359.36C380.352 374.4 396.224 390.336 409.856 403.328l48.448 46.272 33.792-9.984L448.064 298.88 418.048 306.24z" p-id="3798"></path><path d="M542.592 396.672 532.288 364.032 581.824 350.336 574.016 325.376 524.352 338.496 515.392 309.888 568.064 296.384 560.128 271.232 476.032 291.968 519.68 431.424 605.44 406.208 597.504 380.992Z" p-id="3799"></path><path d="M672.704 324.416c-1.216-14.144-3.136-27.136-5.504-42.56l0.384-0.064c6.272 14.592 12.032 26.304 18.56 38.912l28.032 53.376 29.504-8.64-9.664-136.96-27.52 6.784 6.656 55.296c2.432 16.192 4.416 32.128 7.168 47.104L720 337.792c-6.4-13.952-12.608-27.328-20.16-41.792l-27.008-52.48-29.952 7.36 6.208 56.768c1.984 17.344 4.032 34.112 6.592 49.152l-0.448 0.064c-6.272-12.864-14.272-29.312-22.144-44.48L606.144 259.904 574.656 267.648l72.768 126.144 31.296-9.28L672.704 324.416z" p-id="3800"></path><path d="M798.144 291.712c15.168 1.408 22.08 4.352 24.512 12.224 2.56 8.128-1.92 15.232-13.696 18.688-10.944 3.072-23.104 2.304-31.232 0.256l2.112 25.216c7.744 2.112 21.952 2.24 35.008-1.664 30.72-9.088 39.168-30.912 32.704-51.712-5.44-17.536-18.048-26.496-40.384-29.376-16.832-2.176-24.32-4.032-26.688-12.096-1.984-6.4 1.6-13.568 12.8-16.384 10.88-2.816 20.032-1.408 25.216 0l-1.344-24.128c-7.744-1.728-17.728-2.24-30.784 0.896-26.88 6.592-38.592 27.2-31.808 49.024C760.32 281.024 776.768 289.344 798.144 291.712z" p-id="3801"></path></svg>            
+            </a>
+        </div>
+        <div class="projects-section">
+            <div class="projects-section-header">
+                <p>方案公示</p>
+                <p class="timestamp"></p>
+            </div>
+            <div class="projects-section-line">
+                <div class="projects-status">
+                    <div class="item-status">
+                        <span class="status-number" th:text="${planScores.size()}">45</span>
+                        <span class="status-type">方案数</span>
+                    </div>
+                    <div class="item-status">
+                        <span class="status-number" th:text="${commentUsers.size()}">24</span>
+                        <span class="status-type">留言数</span>
+                    </div>
+                    <div class="item-status">
+                        <span class="status-number">62</span>
+                        <span class="status-type">收录新闻数</span>
+                    </div>
+                </div>
+                <div class="view-actions">
+                    <button class="view-btn list-view" title="List View">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list">
+                            <line x1="8" y1="6" x2="21" y2="6" />
+                            <line x1="8" y1="12" x2="21" y2="12" />
+                            <line x1="8" y1="18" x2="21" y2="18" />
+                            <line x1="3" y1="6" x2="3.01" y2="6" />
+                            <line x1="3" y1="12" x2="3.01" y2="12" />
+                            <line x1="3" y1="18" x2="3.01" y2="18" /></svg>
+                    </button>
+                    <button class="view-btn grid-view active" title="Grid View">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid">
+                            <rect x="3" y="3" width="7" height="7" />
+                            <rect x="14" y="3" width="7" height="7" />
+                            <rect x="14" y="14" width="7" height="7" />
+                            <rect x="3" y="14" width="7" height="7" /></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="project-boxes jsGridView">
+                <div class="project-box-wrapper" th:each="planScore:${planScores}">
+                    <div class="project-box" style="background-color: #fee4cb;">
+                        <div class="project-box-header">
+                            <span th:text="${#dates.format(planScore.get('Plan').getPlanTime(),'yyyy-MM-dd')}">2022-1-10</span>
+                            <div class="more-wrapper">
+                                <a th:href="@{/plan/{id}(id=${planScore.get('Plan').getPlanId()})}"
+                                   style="text-decoration: none;">
+                                    <button class="project-btn-more">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical">
+                                            <circle cx="12" cy="12" r="1" />
+                                            <circle cx="12" cy="5" r="1" />
+                                            <circle cx="12" cy="19" r="1" /></svg>
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-box-content-header">
+                            <p class="box-content-header" th:text="${planScore.get('Plan').getCategory()}"></p>
+                            <p class="box-content-subheader">[[${planScore.get('Plan').getPlanProvince()}]]
+                                [[${planScore.get('Plan').getPlanCity()}]]</p>
+                        </div>
+                        <div class="box-progress-wrapper">
+                            <p class="box-progress-header">专家评分：</p>
+                            <div class="box-progress-degrees">
+                                <div class="box-progress-degree">潜伏期<p class="">[[${planScore.get('Score')
+                                    .getInfancyScore()}]]</p></div>
+                                <div class="box-progress-degree">爆发期<p class="">[[${planScore.get('Score')
+                                    .getOutbreakScore()}]]</p></div>
+                                <div class="box-progress-degree">恢复期<p class="">[[${planScore.get('Score')
+                                    .getRecoveryScore()}]]</p></div>
+                            </div>
+
+                        </div>
+                        <div class="project-box-footer">
+                            <div class="participants">
+                                <img th:src="'/upload/'+${planScore.get('User').getHeadImg()}" alt="participant">
+                                <span class="project-box-user" th:text="${planScore.get('User').getUsername()}">
+                                </span>
+                            </div>
+
+                            <a style="text-decoration: none;"
+                               th:href="@{/follow/{userId1}(userId1=${planScore.get('User').getUserId()})}">
+                                <div class="days-left" style="color: #ff942e;"
+                                     th:text="${planScore.get('ifFollow')=='Yes'?'已关注':'关注'}">
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="messages-section">
+            <button class="messages-close">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="15" y1="9" x2="9" y2="15" />
+                    <line x1="9" y1="9" x2="15" y2="15" /></svg>
+            </button>
+            <div class="projects-section-header">
+                <p>最新留言</p>
+            </div>
+            <div class="messages">
+                <div class="message-box" th:each="commentUser:${commentUsers.subList(0,5)}"
+                     th:id="${commentUser.get('comment').getCommentId()}">
+                    <img th:src="'/upload/'+${commentUser.get('user').getHeadImg()}" alt="profile image">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <div class="name" th:text="${commentUser.get('user').getUsername()}">陕西卫健委</div>
+                            <div class="star-checkbox" id="like"
+                                 th:onclick="|javascript:like(${commentUser.get('comment').getCommentId()})|">
+                                <div class="tolike" style="display: block">
+                                    <label>
+                                        <svg t="1649499005615" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2034" width="48" height="48"><path d="M598.354747 67.542626c-48.148687 0-90.130101 32.905051-98.960808 79.437576 0 0-14.312727 72.882424-21.798787 99.090101-12.308687 43.196768-55.363232 90.944646-86.522829 106.188283-23.531313 11.636364-110.99798 11.765657-116.350707 11.765656H155.707475c-32.762828 0-59.384242 26.479192-59.384243 59.384243v475.022222c0 32.762828 26.479192 59.384242 59.384243 59.384242h548.033939c88.126061 0 163.025455-64.452525 176.135758-151.647676l45.873131-305.713132c10.834747-71.809293-44.8-136.274747-117.423838-136.274747H673.254141s20.066263-66.469495 30.228687-178.669899c5.081212-56.837172-35.167677-110.99798-94.280404-117.152323-3.620202-0.54303-7.227475-0.814545-10.847677-0.814546zM333.705051 898.288485V421.533737c38.917172-2.534141 66.999596-8.016162 83.574949-16.316767 43.726869-21.669495 99.633131-81.040808 117.281616-143.088485 7.899798-27.681616 21.39798-96.155152 23.001212-104.184243 3.47798-17.92 20.596364-31.159596 40.649697-31.159596 1.603232 0 3.206465 0.129293 4.822627 0.271516 28.211717 2.947879 43.326061 29.698586 41.32202 52.686868-9.360808 103.912727-27.823838 166.503434-28.082425 166.904243l-23.130505 76.489697h215.182223c17.519192 0 33.564444 7.356768 45.071515 20.596363 11.507071 13.239596 16.316768 30.228687 13.640404 47.618586L821.294545 797.052121c-8.830707 58.569697-58.181818 101.094141-117.423838 101.094142h-370.165656v0.142222z m-177.997576 0v-475.022222h118.626262v475.022222H155.707475z m0 0" p-id="2035"></path></svg>
+                                    </label>
+                                </div>
+                                <div class="tolike" style="display: none">
+                                    <label>
+                                        <svg t="1649499049635" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2184" width="48" height="48"><path d="M948.4 407.2c-29.2-35.5-76.9-35.5-92.6-35.5H730c10.2-55.2 18.9-119.4 0.2-187.1-12.8-46.6-36.3-79.7-72-101.1-18.7-11.2-38.1-16.9-57.8-16.9-51.8 0-90.6 38.4-96.4 95.7-2.2 21.4-4.2 41.7-9.3 59.1-19 63.9-65.4 112.7-108.3 151.8-16 14.4-33.1 40.2-33.3 69.2-0.6 77.6-0.7 155.5-0.7 235.1l-0.1 141.4c-0.2 47.3 25 85.4 67 101.7 22.2 9 45.7 14 70.1 14.7 38.8 0.5 77.8 0.5 114.3 0.5h56.9c37.2 0 74.4 0 111.8 0.4h1.2c43.5 0 77.7-21.7 93.9-59.5l4.8-11.1c11.3-26 22.9-52.9 30.1-82.8 22-90.9 44.9-188.2 63.4-283.8 7.4-37.9 1.6-68.8-17.4-91.8zM216.1 374.5h-11.9c-56.2 0-101.9 45.7-101.9 101.9v348.4c0 56.2 45.7 101.9 101.9 101.9h11.9c56.2 0 101.9-45.7 101.9-101.9V476.4c0.1-56.2-45.7-101.9-101.9-101.9z" fill="#333333" p-id="2185"></path></svg>
+                                    </label>
+                                </div>
+                                <span id="star-times">[[${commentUser.get('comment').getThumb()}]]</span>
+                            </div>
+                        </div>
+                        <p class="message-line" th:text="${commentUser.get('comment').getContent()}">
+                        </p>
+                        <p class="message-line time" th:text="${#dates.format(commentUser.get('comment').getCreateTime(),'yyyy-MM-dd')}">
+                            2022-03-19
+                        </p>
+                    </div>
+                </div>
+                <div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <address>
+            Written by <a id="author">Leilei Song</a> .<br>
+            Visit me at mail:<br>
+            2661730542@qq.com
+        </address>
+        <div class="timestamp">
+            当前时间：<span></span>
+        </div>
+</footer>
+</div>
+<!-- 点击新增时将弹出一个较大的表单框用于新增方案 -->
+<div class="add" style="display: none;">
+    <div class="add-wrapper">
+
+        <section class="add-section">
+            <div class="section-top">
+                <h1>新增方案</h1>
+                <div class="section-svg">
+                    <svg t="1647503168256" class="back-svg" viewBox="0 0 1219 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="13022" width="48" height="48"><path d="M341.333333 585.142857L0 292.571429 341.333333 0v243.809524h487.619048c215.454476 0 390.095238 174.640762 390.095238 390.095238s-174.640762 390.095238-390.095238 390.095238H341.333333v-97.52381h487.619048c161.572571 0 292.571429-130.998857 292.571429-292.571428s-130.998857-292.571429-292.571429-292.571429H341.333333v243.809524z" p-id="13023"></path></svg>
+                </div>
+            </div>
+            <div class="add-content">
+                <form class="add-form" th:action="@{/addPlan}" method="post">
+                    <div class="add-top">
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">事件类型</span>
+                                <span class="add-date-wrapper">
+                                    <input type="hidden" name="userId" th:value="${session.user.getUserId()}">
+                                    <input class="add-input"  required="" name="category" type="text" tabindex="1" placeholder="如：新冠肺炎" autofocus>
+                                  </span>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">时间</span>
+                                <span class="add-date-wrapper">
+                                    <input class="add-input"  required="" name="planTime" type="date"
+                                           tabindex="2" placeholder="When?">
+                                  </span>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">地点</span>
+                                <select id="province" required="" name="planProvince" runat="server"
+                                        onchange="selectprovince(this);" ></select>
+                                <select id="city"  required="" name="planCity" runat="server"
+                                        style="display: none;"></select>
+                            </label>
+                        </div>
+                    </div>
+                    <h3>属性</h3>
+                    <div class="add-left">
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">温度范围左</span>
+                                <input class="add-input" required=""   name="temp1" type="text" tabindex="1"
+                                       placeholder="℃" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">温度范围右</span>
+                                <input class="add-input" required=""   name="temp2" type="text" tabindex="1"
+                                       placeholder="℃" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">相对湿度左</span>
+                                <input class="add-input" required=""   name="humidity1" type="text" tabindex="1" placeholder="%" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">相对湿度右</span>
+                                <input class="add-input"  required=""  name="humidity2" type="text" tabindex="1" placeholder="%" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">二氧化氮含量</span>
+                                <input class="add-input"  required=""  name="no2Content" type="text" tabindex="1" placeholder="微克/立方米" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">天气</span>
+                                <div class="add-select-wrapper">
+                                    <span class="add-select">
+                                      <select name="weather" tabindex="3" required="" >
+                                        <option value="晴" selected>晴</option>
+                                        <option value="多云">多云</option>
+                                        <option value="阴">阴</option>
+                                        <option value="雨">雨</option>
+                                        <option value="雪">雪</option>
+                                      </select>
+                                    </span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <h3>要素</h3>
+                    <div class="add-right">
+
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">要素一</span>
+                                <input class="add-input" required=""   name="newCases" type="text"
+                                       tabindex="1" placeholder="如：新增确诊" autofocus>
+                            </label>
+                        </div>
+
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">要素二</span>
+                                <input class="add-input"  required=""  name="confirmedCases" type="text" tabindex="1" placeholder="如：现有确诊病例" autofocus>
+                            </label>
+                        </div>
+
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">要素三</span>
+                                <input class="add-input"  required=""  name="closeContact" type="text" tabindex="1" placeholder="如：密切接触者" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">要素四</span>
+                                <input class="add-input"  required=""  name="asymptomatic" type="text" tabindex="1" placeholder="如：无症状感染者" autofocus>
+                            </label>
+                        </div>
+                    </div>
+                    <h3>应急方案描述</h3>
+                    <div class="middle">
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">医疗</span>
+                                <textarea name="medical" required="" ></textarea>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">经济</span>
+                                <textarea name="transport" required="" ></textarea>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">民生</span>
+                                <textarea name="livelihood" required="" ></textarea>
+                            </label>
+                        </div>
+                    </div>
+                    <div></div>
+                    <h3>实施结果描述</h3>
+                    <div class="bottom">
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">事件防控影响</span>
+                                <textarea name="epidemic" required="" ></textarea>
+                            </label>
+                        </div>
+                        <div class="add-row degree">
+                            <label class="add-column">
+                                <span class="add-label">专家打分</span>
+                                <input class="add-input"  required=""  name="epidemicScore" type="text" tabindex="1" placeholder="十分制" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">经济影响</span>
+                                <textarea name="economic" required="" ></textarea>
+                            </label>
+                        </div>
+                        <div class="add-row degree">
+                            <label class="add-column">
+                                <span class="add-label">专家打分</span>
+                                <input class="add-input"  required=""  name="economicScore" type="text" tabindex="1" placeholder="十分制" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">社会影响</span>
+                                <textarea name="social" required="" ></textarea>
+                            </label>
+                        </div>
+                        <div class="add-row degree">
+                            <label class="add-column">
+                                <span class="add-label">专家打分</span>
+                                <input class="add-input"  required=""  name="socialScore" type="text" tabindex="1" placeholder="十分制" autofocus>
+                            </label>
+                        </div>
+                    </div>
+
+                    <input class="button button-primary" type="submit" value="发布" tabindex="7">
+
+                </form>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<script th:inline="javascript">
+    var index = 0;
+    var times = document.getElementById("star-times");
+    console.log("执行");
+    function like(commentId){
+        var tolike1 = document.getElementsByClassName("tolike")[0];
+        var tolike2 = document.getElementsByClassName("tolike")[1];
+        if (index == 0) {//进行点赞
+            tolike2.style.display="block";//已点赞图标亮起
+            tolike1.style.display="none";
+            times.innerHTML = parseInt(times.innerHTML)+1;
+            index = 1;
+        } else if (index == 1) {//未点赞
+            tolike1.style.display="block";
+            tolike2.style.display="none";
+            times.innerHTML = parseInt(times.innerHTML)-1;
+            index = 0;
+        }
+        $.ajax({
+            url:"/like",
+            type:"post",
+            data:{id:commentId,index:index},
+            dataType:"json",
+            success: function () {
+                console.log("点赞成功");
+            }
+        });
+    }
+
+</script>
+<!-- 时间地点选择 -->
+<script>
+
+    //地点选择器      
+    var list1 = new Array;
+    var list2 = new Array;
+    list1[list1.length] = "北京市";
+    list1[list1.length] = "天津市";
+    list1[list1.length] = "河北省";
+    list1[list1.length] = "山西省";
+    list1[list1.length] = "内蒙古";
+    list1[list1.length] = "辽宁省";
+    list1[list1.length] = "吉林省";
+    list1[list1.length] = "黑龙江省";
+    list1[list1.length] = "上海市";
+    list1[list1.length] = "江苏省";
+    list1[list1.length] = "浙江省";
+    list1[list1.length] = "安徽省";
+    list1[list1.length] = "福建省";
+    list1[list1.length] = "江西省";
+    list1[list1.length] = "山东省";
+    list1[list1.length] = "河南省";
+    list1[list1.length] = "湖北省";
+    list1[list1.length] = "湖南省";
+    list1[list1.length] = "广东省";
+    list1[list1.length] = "广西自治区";
+    list1[list1.length] = "海南省";
+    list1[list1.length] = "重庆市";
+    list1[list1.length] = "四川省";
+    list1[list1.length] = "贵州省";
+    list1[list1.length] = "云南省";
+    list1[list1.length] = "西藏自治区";
+    list1[list1.length] = "陕西省";
+    list1[list1.length] = "甘肃省";
+    list1[list1.length] = "青海省";
+    list1[list1.length] = "宁夏回族自治区";
+    list1[list1.length] = "新疆维吾尔自治区";
+    list1[list1.length] = "香港特别行政区";
+    list1[list1.length] = "澳门特别行政区";
+    list1[list1.length] = "台湾省";
+    list1[list1.length] = "其它";
+
+    list2[list2.length] = new Array("东城区", "西城区", "崇文区", "宣武区", "朝阳区", "丰台区", "石景山区", " 海淀区（中关村）", "门头沟区", "房山区", "通州区", "顺义区", "昌平区", "大兴区", "怀柔区", "平谷区", "密云县", "延庆县", " 其他");
+    list2[list2.length] = new Array("和平区", "河东区", "河西区", "南开区", "红桥区", "塘沽区", "汉沽区", "大港区",
+                "西青区", "津南区", "武清区", "蓟县", "宁河县", "静海县", "其他");
+    list2[list2.length] = new Array("石家庄市", "张家口市", "承德市", "秦皇岛市", "唐山市", "廊坊市", "衡水市",
+                "沧州市", "邢台市", "邯郸市", "保定市", "其他");
+    list2[list2.length] = new Array("太原市", "朔州市", "大同市", "长治市", "晋城市", "忻州市", "晋中市", "临汾市",
+                "吕梁市", "运城市", "其他");
+    list2[list2.length] = new Array("呼和浩特市", "包头市", "赤峰市", "呼伦贝尔市", "鄂尔多斯市", "乌兰察布市",
+                "巴彦淖尔市", "兴安盟", "阿拉善盟", "锡林郭勒盟", "其他");
+    list2[list2.length] = new Array("沈阳市", "朝阳市", "阜新市", "铁岭市", "抚顺市", "丹东市", "本溪市", "辽阳市",
+                "鞍山市", "大连市", "营口市", "盘锦市", "锦州市", "葫芦岛市", "其他");
+    list2[list2.length] = new Array("长春市", "白城市", "吉林市", "四平市", "辽源市", "通化市", "白山市", "延边朝鲜族自治州", "其他");
+    list2[list2.length] = new Array("哈尔滨市", "七台河市", "黑河市", "大庆市", "齐齐哈尔市", "伊春市", "佳木斯市",
+                "双鸭山市", "鸡西市", "大兴安岭地区(加格达奇)", "牡丹江", "鹤岗市", "绥化市　", "其他");
+    list2[list2.length] = new Array("黄浦区", "卢湾区", "徐汇区", "长宁区", "静安区", "普陀区", "闸北区", "虹口区",
+                "杨浦区", "闵行区", "宝山区", "嘉定区", "浦东新区", "金山区", "松江区", "青浦区", "南汇区", "奉贤区", "崇明县", "其他");
+    list2[list2.length] = new Array("南京市", "徐州市", "连云港市", "宿迁市", "淮安市", "盐城市", "扬州市", "泰州市",
+                "南通市", "镇江市", "常州市", "无锡市", "苏州市", "其他");
+    list2[list2.length] = new Array("杭州市", "湖州市", "嘉兴市", "舟山市", "宁波市", "绍兴市", "衢州市", "金华市",
+                "台州市", "温州市", "丽水市", "其他");
+    list2[list2.length] = new Array("合肥市", "宿州市", "淮北市", "亳州市", "阜阳市", "蚌埠市", "淮南市", "滁州市",
+                "马鞍山市", "芜湖市", "铜陵市", "安庆市", "黄山市", "六安市", "巢湖市", "池州市", "宣城市", "其他");
+    list2[list2.length] = new Array("福州市", "南平市", "莆田市", "三明市", "泉州市", "厦门市", "漳州市", "龙岩市", "宁德市", "其他");
+    list2[list2.length] = new Array("南昌市", "九江市", "景德镇市", "鹰潭市", "新余市", "萍乡市", "赣州市", "上饶市",
+                "抚州市", "宜春市", "吉安市", "其他");
+    list2[list2.length] = new Array("济南市", "聊城市", "德州市", "东营市", "淄博市", "潍坊市", "烟台市", "威海市",
+                "青岛市", "日照市", "临沂市", "枣庄市", "济宁市", "泰安市", "莱芜市", "滨州市", "菏泽市", "其他");
+    list2[list2.length] = new Array("郑州市", "三门峡市", "洛阳市", "焦作市", "新乡市", "鹤壁市", "安阳市", "濮阳市",
+                "开封市", "商丘市", "许昌市", "漯河市", "平顶山市", "南阳市", "信阳市", "周口市", "驻马店市", "其他");
+    list2[list2.length] = new Array("武汉市", "十堰市", "襄樊市", "荆门市", "孝感市", "黄冈市", "鄂州市", "黄石市",
+                "咸宁市", "荆州市", "宜昌市", "随州市", "恩施土家族苗族自治州", "仙桃市", "天门市", "潜江市", "神农架林区", "其他");
+    list2[list2.length] = new Array("长沙市", "张家界市", "常德市", "益阳市", "岳阳市", "株洲市", "湘潭市", "衡阳市",
+                "郴州市", "永州市", "邵阳市", "怀化市", "娄底市", "湘西土家族苗族自治州", "其他");
+    list2[list2.length] = new Array("广州市", "清远市", "韶关市", "河源市", "梅州市", "潮州市", "汕头市", "揭阳市",
+                "汕尾市", " 惠州市", "东莞市", "深圳市", "珠海市", "中山市", "江门市", "佛山市", "肇庆市", "云浮市",
+                "阳江市", "茂名市", "湛江市", " 其他");
+    list2[list2.length] = new Array("南宁市", "桂林市", "柳州市", "梧州市", "贵港市", "玉林市", "钦州市", "北海市",
+                "防城港市", "崇左市", "百色市", "河池市", "来宾市", "贺州市", "其他");
+    list2[list2.length] = new Array("海口市", "三亚市", "其他");
+    list2[list2.length] = new Array("渝中区", "大渡口区", "江北区", "沙坪坝区", "九龙坡区", "南岸区", "北碚区",
+                "万盛区", "双桥区", "渝北区", "巴南区", "万州区", "涪陵区", "黔江区", "长寿区", "合川市", "永川市",
+                "江津市", "南川市", "綦江县", "潼南县", "铜梁县", "大足县", "璧山县", "垫江县", "武隆县", "丰都县",
+                "城口县", "开县", "巫溪县", "巫山县", "奉节县", "云阳县", "忠县", "石柱土家族自治县", "彭水苗族土家族自治县",
+                "酉阳土家族苗族自治县", "秀山土家族苗族自治县", "其他");
+    list2[list2.length] = new Array("成都市", "广元市", "绵阳市", "德阳市", "南充市", "广安市", "遂宁市",
+                "内江市", "乐山市", "自贡市", "泸州市", "宜宾市", "攀枝花市", "巴中市", "资阳市", "眉山市", "雅安",
+                "阿坝藏族羌族自治州", "甘孜藏族自治州", "凉山彝族自治州县", "其他");
+    list2[list2.length] = new Array("贵阳市", "六盘水市", "遵义市", "安顺市", "毕节地区", "铜仁地区",
+                "黔东南苗族侗族自治州", "黔南布依族苗族自治州", "黔西南布依族苗族自治州", "其他");
+    list2[list2.length] = new Array("昆明市", "曲靖市", "玉溪市", "保山市", "昭通市", "丽江市", "普洱市",
+                "临沧市", "宁德市", "德宏傣族景颇族自治州", "怒江傈僳族自治州", "楚雄彝族自治州", "红河哈尼族彝族自治州",
+                "文山壮族苗族自治州", "大理白族自治州", "迪庆藏族自治州", "西双版纳傣族自治州", "其他");
+    list2[list2.length] = new Array("拉萨市", "那曲地区", "昌都地区", "林芝地区", "山南地区", "日喀则地区", "阿里地区", "其他");
+    list2[list2.length] = new Array("西安市", "延安市", "铜川市", "渭南市", "咸阳市", "宝鸡市", "汉中市", "安康市", "商洛市", "其他");
+    list2[list2.length] = new Array("兰州市 ", "嘉峪关市", "金昌市", "白银市", "天水市", "武威市", "酒泉市",
+                "张掖市", "庆阳市", "平凉市", "定西市", "陇南市", "临夏回族自治州", "甘南藏族自治州", "其他");
+    list2[list2.length] = new Array("西宁市", "海东地区", "海北藏族自治州", "黄南藏族自治州", "玉树藏族自治州",
+                "海南藏族自治州", "果洛藏族自治州", "海西蒙古族藏族自治州", "其他");
+    list2[list2.length] = new Array("银川市", "石嘴山市", "吴忠市", "固原市", "中卫市", "其他");
+    list2[list2.length] = new Array("乌鲁木齐市", "克拉玛依市", "喀什地区", "阿克苏地区", "和田地区", "吐鲁番地区",
+                "哈密地区", "塔城地区", "阿勒泰地区", "克孜勒苏柯尔克孜自治州", "博尔塔拉蒙古自治州",
+                "昌吉回族自治州伊犁哈萨克自治州", "巴音郭楞蒙古自治州", "河子市", "阿拉尔市", "五家渠市", "图木舒克市", "其他");
+    list2[list2.length] = new Array("香港", "其他");
+    list2[list2.length] = new Array("澳门", "其他");
+    list2[list2.length] = new Array("台湾", "其他");
+
+    var ddlProvince = document.getElementById("province");
+    var ddlCity = document.getElementById("city");
+
+    for(var i =0;i<list1.length; i++)
+    {
+        var option = document.createElement("option");
+        option.appendChild(document.createTextNode(list1[i]));
+        option.value = list1[i];
+        ddlProvince.appendChild(option);
+        //city initialize
+        var firstprovince = list2[0];
+        for (var j = 0; j < firstprovince.length; j++) {
+            var optioncity = document.createElement("option");
+            optioncity.appendChild(document.createTextNode(firstprovince[j]));
+            optioncity.value = firstprovince[j];
+            ddlCity.appendChild(optioncity);
+        }
+    }
+
+    function indexof(obj,value)
+    {
+        var k=0;
+        for(;k<obj.length;k++)
+        {
+            if(obj[k] == value)
+            return k;
+        }
+        return k;
+    }
+
+    function selectprovince(obj) {
+        ddlCity.options.length = 0;//clear
+        var index = indexof(list1,obj.value);
+        var list2element = list2[index];
+        for(var i =0;i<list2element.length; i++)
+        {
+            var option = document.createElement("option");
+            option.appendChild(document.createTextNode(list2element[i]));
+            option.value = list2element[i];
+            ddlCity.appendChild(option);
+        }
+        ddlCity.style.display="block";
+    }
+
+  </script>
+<script>
+    window.onload = function(){
+        var p = document.getElementsByClassName("timestamp")[0];
+        var span1 = document.getElementsByClassName('timestamp')[1].getElementsByTagName('span')[0];
+        var dateStr = formatDate();
+        // 将时间放置到span内
+        span1.innerText = dateStr;
+        p.innerText = dateStr;
+        // 每隔一秒，再放置一次最新的时间
+        setInterval(function(){
+            span1.innerText = formatDate(0);
+            p.innerText = formatDate(1);
+        },1000);
+        //格式化年月日时分秒 
+        function formatDate(index){
+            var date = new Date();
+            var year = date.getFullYear();
+            var month = date.getMonth()+1;
+            month = month<10?'0'+month:month;
+            var day = date.getDate();
+            day = day<10?'0'+day:day;
+            var hours = date.getHours();
+            hours = hours<10?'0'+hours:hours;
+            var minutes = date.getMinutes();
+            minutes = minutes<10?'0'+minutes:minutes;
+            var seconds = date.getSeconds();
+            seconds = seconds<10?'0'+seconds:seconds;
+            // 2019-07-23 09:40:30
+            if(index==0){
+                return year+'-'+month+'-'+day+' '+hours+':'+minutes+':'+seconds;
+            }else{
+            return year+'-'+month+'-'+day;
+            }
+        }
+
+        //新增模块
+        var add = document.getElementsByClassName("add")[0];
+        var addbtn = document.getElementsByClassName("add-btn")[0];
+        var backsvg = document.getElementsByClassName("back-svg")[0];
+        var section = document.getElementsByClassName("projects-section")[0];
+        var message = document.getElementsByClassName("messages-section")[0];
+
+        addbtn.onclick = function (){
+            if(add.style.display=="block"){
+                add.style.display="none";
+                section.style.filter="none";
+                message.style.filter="none";
+            }else{
+                add.style.display="block";
+                section.style.filter="blur(3px)";
+                message.style.filter="blur(3px)";
+            }
+        }
+        backsvg.onclick = function (){
+            if(add.style.display=="block"){
+                add.style.display="none";
+                section.style.filter="none";
+                message.style.filter="none";
+            }else{
+                add.style.display="block";
+                section.style.filter="blur(3px)";
+                message.style.filter="blur(3px)";
+            }
+        }
+
+
+
+        //方案循环配色 
+        var boxNum = document.getElementsByClassName("project-box").length;
+        for (let i = 0; i < boxNum; i++) {
+            var box = document.getElementsByClassName("project-box")[i];
+            switch(i%6){
+                case 0:box.style.background="#fee4cb";break;
+                case 1:box.style.background="#e9e7fd";break;
+                case 2:box.style.background="#dbf6fd";break;
+                case 3:box.style.background="#ffd3e2";break;
+                case 4:box.style.background="#c8f7dc";break;
+                case 5:box.style.background="#d5deff";break;
+            }
+            
+        }
+
+
+
+
+    }
+</script>
+</body>
+</html>

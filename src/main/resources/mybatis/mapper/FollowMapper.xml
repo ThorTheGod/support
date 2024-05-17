@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xidian.support.mapper.FollowMapper">
+
+    <insert id="addFollow" parameterType="com.xidian.support.pojo.Follow" useGeneratedKeys="true"
+            keyProperty="followId">
+        insert into follow(user_id1,user_id2)
+        values(#{userId1},#{userId2});
+    </insert>
+    <delete id="cancelFollow" parameterType="int">
+        delete from follow where follow_id=#{followId};
+    </delete>
+    <select id="findFollowByUserId1" parameterType="int" resultType="com.xidian.support.pojo.Follow">
+        select * from follow where user_id1=#{userId1};
+    </select>
+
+
+    <select id="findFollowByUserId12" parameterType="int" resultType="com.xidian.support.pojo.Follow">
+        select * from follow where user_id1=#{userId1} and user_id2=#{userId2};
+    </select>
+
+    <select id="findFollowByUserId2" parameterType="int" resultType="com.xidian.support.pojo.Follow">
+        select * from follow where user_id2=#{userId2};
+    </select>
+</mapper>

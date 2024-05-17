@@ -1,0 +1,1030 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/personal.css}">
+    <script type="text/javascript" th:src="@{/js/info.js}"></script>
+    <script th:src="@{/js/pikaday.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/pikaday.css}">
+    <script type="text/javascript"
+            th:src="@{/js/jquery-1.7.2.min.js}"></script>
+</head>
+<body>
+<div class="app-container">
+    <div class="app-header">
+        <div class="app-header-left">
+            <span class="app-icon"></span>
+            <p class="app-name">应急决策支持系统</p>
+            <div class="search-wrapper">
+                <form th:action="@{/searchCategory}" method="post">
+                    <input class="search-input" type="text" name="category" placeholder="事件类型如：新冠肺炎">
+                </form>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-search" viewBox="0 0 24 24">
+                    <defs></defs>
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="M21 21l-4.35-4.35"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="app-header-right">
+            <button class="mode-switch" title="Switch Theme">
+                <svg class="moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="24" height="24" viewBox="0 0 24 24">
+                    <defs></defs>
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                </svg>
+            </button>
+            <button class="add-btn" title="Add New Project" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus btn-icon">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" /></svg>
+            </button>
+            <button class="notification-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>
+            </button>
+            <a th:href="@{/personal}" style="text-decoration: none;">
+                <button class="profile-btn">
+                    <img th:src="'/upload/'+${session.user.getHeadImg()}" />
+                    <span th:text="${session.user.username}"></span>
+                </button>
+            </a>
+        </div>
+        <button class="messages-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-circle">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg>
+        </button>
+    </div>
+    <div class="app-content">
+        <div class="app-sidebar">
+            <a  th:href="@{/main}" class="app-sidebar-link" title="方案总览">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="24" height="24" viewBox="0 0 24 24"  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" /></svg>
+            </a>
+            <a th:href="@{/plan}" class="app-sidebar-link" title="查看方案">
+                <svg t="1647505367791"  class="feather feather-home" width="24" height="24" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1898">
+                    <path d="M187.891082 1023.744192c-40.673495 0-73.672745-32.999251-73.672746-73.672746v-741.843617c0-40.673495 32.999251-73.672745 73.672746-73.672745h30.952785c1.279041-36.324756 31.72021-65.742693 68.300775-65.742693l59.859105-1.534849c0.767424-37.092181 31.208594-67.277542 68.556583-67.277542H611.765176c37.859605 0 68.556583 30.696977 68.556583 68.556583v0.255808h56.533599c36.580565 0 67.021734 29.417937 68.300775 65.742693h30.952785c19.697227 0 38.115413 7.674244 52.184862 21.743692 13.81364 14.069448 21.487884 32.487634 21.487884 52.184861v741.843618c0 40.673495-32.999251 73.672745-73.672746 73.672745H187.891082v-0.255808z m0.255808-822.678991c-3.837122 0-7.162628 3.325506-7.162628 7.162628v741.843617c0 3.837122 3.325506 7.162628 7.162628 7.162628h647.962028c3.837122 0 7.162628-3.325506 7.162628-7.162628v-741.843617c0-3.837122-3.325506-7.162628-7.162628-7.162628h-30.952785v15.092681c0 37.859605-30.696977 68.556583-68.556583 68.556582H287.656258c-37.859605 0-68.556583-30.696977-68.556583-68.556582v-15.092681H188.14689z m97.462903 15.092681c0 1.023233 1.023233 1.790657 2.046465 1.790657h449.1991c0.767424 0 1.790657-0.767424 1.790657-1.790657v-79.300525c0-1.023233-0.767424-1.790657-1.790657-1.790657h-89.788658c-18.418186 0-33.255059-14.836872-33.255059-33.255059V68.300774c0-1.023233-0.767424-1.790657-1.790657-1.790657h-196.204846c-0.767424 0-1.790657 0.767424-1.790657 1.790657v33.510867c0 18.418186-14.836872 33.255059-33.255059 33.255059h-92.858356c-1.023233 0-2.046465 0.767424-2.046465 1.790657 0 0.255808 0 0.511616-0.255808 0.511616v78.788909z" p-id="1899"></path><path d="M338.817887 793.516862c-19.185611 0-34.534099-15.604297-34.5341-34.534099 0-19.185611 15.604297-34.534099 34.5341-34.534099h182.647014c19.185611 0 34.534099 15.604297 34.5341 34.534099 0 19.185611-15.604297 34.534099-34.5341 34.534099h-182.647014z m0-173.437921c-19.185611 0-34.534099-15.604297-34.5341-34.5341s15.604297-34.534099 34.5341-34.534099H688.507619c19.185611 0 34.534099 15.604297 34.5341 34.534099s-15.604297 34.534099-34.5341 34.5341H338.817887z m0-166.78691c-19.185611 0-34.534099-15.604297-34.5341-34.534099s15.604297-34.534099 34.5341-34.5341H688.507619c19.185611 0 34.534099 15.604297 34.5341 34.5341s-15.604297 34.534099-34.5341 34.534099H338.817887z" p-id="1900"></path></svg>                    <defs />
+
+            </a>
+            <a th:href="@{/match}" class="app-sidebar-link" title="方案匹配">
+                <svg t="1647505461547" class="icon" width="24"  height="24" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14904" >
+                    <path d="M730.229508 1024H142.688525c-39.340066 0-71.344262-32.004197-71.344263-71.344262V385.397508a20.983607 20.983607 0 0 1 41.967213 0V952.655738c0 16.195148 13.177705 29.377049 29.37705 29.377049h587.540983c16.195148 0 29.377049-13.181902 29.377049-29.377049V167.868852c0-16.199344-13.181902-29.377049-29.377049-29.377049H142.688525c-16.199344 0-29.377049 13.177705-29.37705 29.377049v96.524591a20.983607 20.983607 0 0 1-41.967213 0V167.868852c0-39.340066 32.004197-71.344262 71.344263-71.344262h587.540983c39.340066 0 71.344262 32.004197 71.344262 71.344262v784.786886c0 39.340066-32.004197 71.344262-71.344262 71.344262z" p-id="14905"></path><path d="M881.311475 927.47541h-100.721311a20.983607 20.983607 0 0 1-20.983607-20.983607V167.868852c0-16.199344-13.181902-29.377049-29.377049-29.377049H243.409836a20.983607 20.983607 0 0 1-20.983606-20.983606V71.344262c0-39.340066 32.004197-71.344262 71.344262-71.344262h587.540983c39.340066 0 71.344262 32.004197 71.344263 71.344262v784.786886c0 39.340066-32.004197 71.344262-71.344263 71.344262z m-79.737705-41.967213h79.737705c16.195148 0 29.377049-13.181902 29.37705-29.377049V71.344262c0-16.199344-13.181902-29.377049-29.37705-29.377049H293.770492c-16.199344 0-29.377049 13.177705-29.377049 29.377049v25.180328h465.836065c39.340066 0 71.344262 32.004197 71.344262 71.344262v717.639345z" p-id="14906"></path><path d="M648.393443 285.377049H193.04918a20.983607 20.983607 0 0 1 0-41.967213h455.344263a20.983607 20.983607 0 1 1 0 41.967213z" p-id="14907"></path><path d="M648.393443 444.852459H193.04918a20.983607 20.983607 0 0 1 0-41.967213h455.344263a20.983607 20.983607 0 1 1 0 41.967213z" p-id="14908"></path><path d="M648.393443 604.327869H193.04918a20.983607 20.983607 0 1 1 0-41.967213h455.344263c11.591344 0 20.983607 9.392262 20.983606 20.983606s-9.392262 20.983607-20.983606 20.983607z" p-id="14909"></path><path d="M512 763.803279H193.04918a20.983607 20.983607 0 1 1 0-41.967213h318.95082c11.591344 0 20.983607 9.392262 20.983607 20.983606s-9.392262 20.983607-20.983607 20.983607z" p-id="14910"></path><path d="M470.032787 940.065574a20.96682 20.96682 0 0 1-15.649574-7.008525l-104.918033-117.508197a20.983607 20.983607 0 0 1 31.303345-27.95436l89.146754 99.844197 198.395803-225.628328a20.983607 20.983607 0 1 1 31.517377 27.715147l-214.032787 243.409836a21.000393 21.000393 0 0 1-15.678951 7.126033L470.032787 940.065574z" p-id="14911"></path></svg>                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" /></svg>
+            </a>
+            <a th:href="@{/info}" class="app-sidebar-link" title="新闻信息">
+                <svg t="1647507840721"  class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3794" width="24" height="24"><path d="M998.592 544.32l-138.112-440.576L156.16 253.12l33.088 109.504L24 406.272c0 0 77.12 245.888 127.872 408.064 50.816 162.048 173.504 85.12 173.504 85.12s532.288-223.872 613.12-257.984C1014.784 609.472 998.592 544.32 998.592 544.32zM207.808 787.264 102.656 452.032l106.24-24.576 129.344 433.344 45.312-27.52C239.424 910.656 207.808 787.264 207.808 787.264zM918.464 605.504c0 0-101.184 39.232-219.008 87.552L623.872 452.096 376.448 529.344l83.52 266.624c-24.64 11.52-46.784 22.144-65.28 31.616L265.216 414.528l0 0L229.12 299.072l614.528-141.504c0 0 95.232 304.384 114.048 364.352S918.464 605.504 918.464 605.504z" p-id="3795"></path><path d="M880.576 386.24 675.2 451.392 691.264 502.784 895.552 433.92Z" p-id="3796"></path><path d="M701.504 535.424 717.504 586.752 920 511.936 905.024 464.256Z" p-id="3797"></path><path d="M418.048 306.24l12.992 41.344c6.72 21.44 13.44 40.448 21.184 58.688L451.776 406.4c-11.712-14.144-25.6-29.632-39.04-42.368l-47.424-44.8L325.056 329.216l45.824 146.24 31.296-9.28L388.48 422.528c-7.36-23.68-14.208-43.904-21.312-62.912L368 359.36C380.352 374.4 396.224 390.336 409.856 403.328l48.448 46.272 33.792-9.984L448.064 298.88 418.048 306.24z" p-id="3798"></path><path d="M542.592 396.672 532.288 364.032 581.824 350.336 574.016 325.376 524.352 338.496 515.392 309.888 568.064 296.384 560.128 271.232 476.032 291.968 519.68 431.424 605.44 406.208 597.504 380.992Z" p-id="3799"></path><path d="M672.704 324.416c-1.216-14.144-3.136-27.136-5.504-42.56l0.384-0.064c6.272 14.592 12.032 26.304 18.56 38.912l28.032 53.376 29.504-8.64-9.664-136.96-27.52 6.784 6.656 55.296c2.432 16.192 4.416 32.128 7.168 47.104L720 337.792c-6.4-13.952-12.608-27.328-20.16-41.792l-27.008-52.48-29.952 7.36 6.208 56.768c1.984 17.344 4.032 34.112 6.592 49.152l-0.448 0.064c-6.272-12.864-14.272-29.312-22.144-44.48L606.144 259.904 574.656 267.648l72.768 126.144 31.296-9.28L672.704 324.416z" p-id="3800"></path><path d="M798.144 291.712c15.168 1.408 22.08 4.352 24.512 12.224 2.56 8.128-1.92 15.232-13.696 18.688-10.944 3.072-23.104 2.304-31.232 0.256l2.112 25.216c7.744 2.112 21.952 2.24 35.008-1.664 30.72-9.088 39.168-30.912 32.704-51.712-5.44-17.536-18.048-26.496-40.384-29.376-16.832-2.176-24.32-4.032-26.688-12.096-1.984-6.4 1.6-13.568 12.8-16.384 10.88-2.816 20.032-1.408 25.216 0l-1.344-24.128c-7.744-1.728-17.728-2.24-30.784 0.896-26.88 6.592-38.592 27.2-31.808 49.024C760.32 281.024 776.768 289.344 798.144 291.712z" p-id="3801"></path></svg>            
+            </a>
+        </div>
+
+        <div class="projects-section">
+            <div class="personal">
+                <div class="personal-info">
+                    <div class="personal-info-head">
+                        <img th:src="'/upload/'+${session.user.getHeadImg()}">
+                        <form th:action="@{/updateHeadImg}" method="post"  enctype="multipart/form-data">
+                            <input type="file" name="file">
+                            <button class="head-button"><span>更换头像</span></button>
+                        </form>
+                    </div>
+                    <div class="personal-info-content">
+                        <h2>个人信息</h2>
+                        <form th:action="@{/updateUser}" method="post">
+                            <div>
+                                <label class="content-left">用户名</label>
+                                <input type="text" placeholder="USERNAME" th:value="${user.getUsername()}"
+                                       name="username">
+                                <input type="hidden" name="userId" th:value="${user.getUserId()}">
+                                <input type="hidden" name="priority" th:value="${user.getPriority()}">
+                                <input type="hidden" name="headImg" th:value="${user.getHeadImg()}">
+                                <span class="msg"></span>
+                            </div>
+                            <div>
+                                <label>
+                                    <label class="content-left">邮箱</label>
+                                    <input type="text" placeholder="EMAIL" th:value="${user.getEmail()}"
+                                           name="email">
+                                    <span class="msg"></span>
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    <label class="content-left">密码</label>
+                                    <input type="text" placeholder="PASSWORD"
+                                           th:value="${user.getPassword()}" name="password">
+                                    <span class="msg"></span>
+                                </label>
+                            </div>
+                            <button class="info-button"><span>确认修改</span></button>
+                        </form>
+                            <a th:href="@{/logout}" style="text-decoration: none;color:black;">
+                                <div class="info-button">
+                                    <span>退出账号</span>
+                                </div>
+                            </a>
+                    </div>
+                </div>
+                <div class="personal-others">
+                    <div class="personal-others-nav">
+                        <div class="personal-button">
+                                <span>方案</span>
+                        </div>
+                        <div class="personal-button">
+                                <span>关注</span>
+                        </div>
+                        <div class="personal-button">
+                                <span>评论</span>
+                        </div>
+                    </div>
+                    <div class="personal-others-content">
+                        <div id="plans">
+                            <div class="others-content" th:each="planScore:${planScores}" style="display:block">
+                                <div class="others-content-photo">
+                                    <img th:src="@{/img/plan.png}">
+                                </div>
+                                <div class="others-content-details">
+                                    <h3>方案编号：[[${planScore.get("Plan").getPlanId()}]]</h3>
+                                    <p>[[${planScore.get("Plan").getCategory()}]] |
+                                        [[${planScore.get('Plan').getPlanProvince()}]]
+                                        [[${planScore.get('Plan').getPlanCity()}]]
+                                        <br>
+                                        <br>
+                                        <span class="author">发布人：[[${planScore.get('User').getUsername()}]]</span>
+                                        <span class="details-time">发布日期：[[${#dates.format(planScore.get
+                                            ('Plan').getPlanTime(),'yyyy-MM-dd')}]]</span>
+                                    </p>
+                                    <div class="content-details-bottom">
+                                        <a  style="text-decoration: none;">
+                                            <div class="plan-button"
+                                                 th:onclick="|javascript:document.getElementById(''+${planScore.get('Plan').getPlanId()}).style.display='block';|">
+                                                <span>修改</span>
+                                            </div>
+                                        </a>
+                                        <a onclick="return del()"
+                                                th:href="@{/deletePlan/{id}(id=${planScore.get('Plan').getPlanId()})}"
+                                           style="text-decoration: none;">
+                                            <div class="plan-button"><span>删除
+                                            </span></div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="update" style="display: none;" th:id="${planScore.get('Plan').getPlanId()}">
+                                    <div class="add-wrapper">
+                                        <section class="add-section">
+                                            <div class="section-top">
+                                                <h1>修改方案</h1>
+                                                <div class="section-svg"
+                                                     th:onclick="|javascript:document.getElementById(''+${planScore.get('Plan').getPlanId()}).style.display='none';|">
+                                                    <svg t="1647503168256" class="svg" viewBox="0 0 1219 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="13022" width="48" height="48"><path d="M341.333333 585.142857L0 292.571429 341.333333 0v243.809524h487.619048c215.454476 0 390.095238 174.640762 390.095238 390.095238s-174.640762 390.095238-390.095238 390.095238H341.333333v-97.52381h487.619048c161.572571 0 292.571429-130.998857 292.571429-292.571428s-130.998857-292.571429-292.571429-292.571429H341.333333v243.809524z" p-id="13023"></path></svg>
+                                                </div>
+                                            </div>
+                                            <div class="add-content">
+                                                <form class="add-form" th:action="@{/updatePlan}" method="post">
+                                                    <div class="add-top">
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">事件类型</span>
+                                                                <span class="add-date-wrapper">
+                                                                    <input type="hidden" name="planId" th:value="${planScore.get('Plan').getPlanId()}">
+                                                                    <input type="hidden" name="userId"
+                                                                           th:value="${planScore.get('User').getUserId()}">
+                                                                    <input type="hidden" name="userId">
+                                                                    <input class="add-input"  name="category" type="text" tabindex="1"
+                                                                           th:value="${planScore.get('Plan').getCategory()}"
+                                                                           placeholder="如：新冠肺炎" autofocus>
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">时间</span>
+                                                                <span class="add-date-wrapper">
+                                                                    <input class="add-input"
+                                                                           name="planTime" type="date"
+                                                                           th:value="${#dates.format(planScore.get('Plan').getPlanTime(),'yyyy-MM-dd')}"
+                                                                           tabindex="2" placeholder="When?">
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">地点</span>
+                                                                <select id="province1" name="planProvince"
+                                                                        runat="server"
+                                                                        th:text="${planScore.get('Plan').getPlanProvince()}"
+                                                                        onchange="selectprovince(this);"
+                                                                ></select>
+                                                                <select id="city1" name="planCity"
+                                                                        th:text="${planScore.get('Plan').getPlanCity()}"
+                                                                        runat="server" ></select>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <h3>属性</h3>
+                                                    <div class="add-left">
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">温度范围左</span>
+                                                                <input class="add-input"  name="temp1"
+                                                                       type="text" tabindex="1"
+                                                                       th:value="${planScore.get('Plan').getTemp1()}"
+                                                                       placeholder="℃" autofocus>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">温度范围右</span>
+                                                                <input class="add-input"  name="temp2" type="text" tabindex="1"
+                                                                       th:value="${planScore.get('Plan').getTemp2()}"
+                                                                       placeholder="℃" autofocus>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">相对湿度左</span>
+                                                                <input class="add-input"  name="humidity1"
+                                                                       th:value="${planScore.get('Plan').getHumidity1()}"
+                                                                       type="text" tabindex="1" placeholder="%" autofocus>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">相对湿度右</span>
+                                                                <input class="add-input"  name="humidity2"
+                                                                       th:value="${planScore.get('Plan').getHumidity2()}"
+                                                                       type="text" tabindex="1" placeholder="%" autofocus>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">二氧化氮含量</span>
+                                                                <input class="add-input"  name="no2Content"
+                                                                       th:value="${planScore.get('Plan').getNo2Content()}"
+                                                                       type="text" tabindex="1" placeholder="微克/立方米" autofocus>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">天气</span>
+                                                                <div class="add-select-wrapper">
+                                                                    <span class="add-select">
+                                                                      <select name="weather" tabindex="3">
+                                                                        <option value="晴"
+                                                                                th:selected="${planScore.get('Plan').getWeather()=='晴'}">晴
+                                                                        </option>
+                                                                        <option value="多云"
+                                                                                th:selected="${planScore.get('Plan').getWeather()=='多云'}">多云</option>
+                                                                        <option value="阴"
+                                                                                th:selected="${planScore.get('Plan').getWeather()=='阴'}">阴</option>
+                                                                        <option value="雨"
+                                                                                th:selected="${planScore.get('Plan').getWeather()=='雨'}">雨</option>
+                                                                        <option value="雪"
+                                                                                th:selected="${planScore.get('Plan').getWeather()=='雪'}">雪</option>
+                                                                      </select>
+                                                                    </span>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <h3>要素</h3>
+                                                    <div class="add-right">
+
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">新增确诊</span>
+                                                                <input class="add-input"  name="newCases"
+                                                                       th:value="${planScore.get('Plan').getNewCases()}"
+                                                                       type="text" tabindex="1" placeholder="单位：人" autofocus>
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">现有确诊病例</span>
+                                                                <input class="add-input"  name="confirmedCases"
+                                                                       th:value="${planScore.get('Plan').getConfirmedCases()}"
+                                                                       type="text" tabindex="1" placeholder="单位：人" autofocus>
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">密切接触者</span>
+                                                                <input class="add-input"  name="closeContact"
+                                                                       th:value="${planScore.get('Plan').getCloseContact()}"
+                                                                       type="text" tabindex="1" placeholder="单位：人" autofocus>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">无症状感染者</span>
+                                                                <input class="add-input"  name="asymptomatic"
+                                                                       th:value="${planScore.get('Plan').getAsymptomatic()}"
+                                                                       type="text" tabindex="1" placeholder="单位：人" autofocus>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <h3>应急方案描述</h3>
+                                                    <div class="middle">
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">医疗</span>
+                                                                <textarea name="medical"
+                                                                          th:text="${planScore.get('Plan').getMedical()}"
+                                                                ></textarea>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">交通</span>
+                                                                <textarea name="transport"
+                                                                          th:text="${planScore.get('Plan').getTransport()}"
+                                                                ></textarea>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">民生</span>
+                                                                <textarea name="livelihood"
+                                                                          th:text="${planScore.get('Plan').getLivelihood()}"
+                                                                ></textarea>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div></div>
+                                                    <h3>实施结果描述</h3>
+                                                    <div class="bottom">
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">疫情防控影响</span>
+                                                                <textarea name="epidemic"
+                                                                          th:text="${planScore.get('Plan').getEpidemic()}"
+                                                                ></textarea>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row degree">
+                                                            <label class="add-column">
+                                                                <span class="add-label">专家打分</span>
+                                                                <input class="add-input"  name="epidemicScore"
+                                                                       th:value="${planScore.get('Plan').getEpidemicScore()}"
+                                                                       type="text" tabindex="1" placeholder="十分制" autofocus>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">经济影响</span>
+                                                                <textarea name="economic"
+                                                                          th:text="${planScore.get('Plan').getEconomic()}"
+                                                                ></textarea>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row degree">
+                                                            <label class="add-column">
+                                                                <span class="add-label">专家打分</span>
+                                                                <input class="add-input"  name="economicScore"
+                                                                       th:value="${planScore.get('Plan').getEconomicScore()}"
+                                                                       type="text" tabindex="1" placeholder="十分制" autofocus>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row">
+                                                            <label class="add-column">
+                                                                <span class="add-label">社会影响</span>
+                                                                <textarea name="social"
+                                                                          th:text="${planScore.get('Plan').getSocial()}"
+                                                                ></textarea>
+                                                            </label>
+                                                        </div>
+                                                        <div class="add-row degree">
+                                                            <label class="add-column">
+                                                                <span class="add-label">专家打分</span>
+                                                                <input class="add-input"  name="socialScore"
+                                                                       th:value="${planScore.get('Plan').getSocialScore()}"
+                                                                       type="text" tabindex="1" placeholder="十分制" autofocus>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <input class="button button-primary" type="submit" value="发布" tabindex="7">
+
+                                                </form>
+                                            </div>
+                                        </section>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="news"  style="display: none">
+                            <div class="others-content" th:each="followUser:${followUsers}">
+                                <div class="others-content-photo">
+                                    <img th:src="@{/img/follow.png}">
+                                </div>
+                                <div class="others-content-details">
+                                    <h3>关注：[[${followUser.get('user1').getUsername()}]]</h3>
+                                    <p>最新方案：<br>
+                                        <span th:if="${followUser.get('plan')!=null}">
+                                        方案编号：[[${followUser.get('plan').getPlanId()}]] |
+                                            时间：[[${#dates.format(followUser.get('plan').getPlanTime(),'yyyy-MM-dd')}]]<br>
+                                        发生地：[[${followUser.get('plan').getPlanProvince()}]]，[[${followUser.get('plan').getPlanCity()}]]
+                                        </span>
+                                        <span th:if="${followUser.get('plan')==null}">
+                                            该用户尚未发布方案
+                                        </span>
+                                    </p>
+                                    <div class="content-details-bottom">
+                                        <a onclick="return del()"
+                                           th:href="@{/cancelFollow/{id}(id=${followUser.get('follow').getFollowId()})}"
+                                           style="text-decoration: none;">
+                                            <div class="plan-button"><span>取消关注
+                                            </span></div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="comments" style="display: none">
+                            <div class="others-content" th:each="comment:${comments}" style="display:block">
+                                <div class="others-content-photo">
+                                    <img th:src="@{/img/comment.png}">
+                                </div>
+                                <div class="others-content-details">
+                                    <h3>方案编号：[[${comment.getPlanId()}]]</h3>
+                                    <p>点赞数：[[${comment.getThumb()}]] <br>
+                                        评论内容：[[${comment.getContent()}]]
+                                        <br>
+                                        <br>
+                                        <span class="author">发布人：[[${session.user.getUsername()}]]</span>
+                                        <span class="details-time">发布日期：[[${#dates.format(comment
+                                            .getCreateTime(),'yyyy-MM-dd')}]]</span>
+                                    </p>
+                                    <div class="content-details-bottom">
+                                        <a  style="text-decoration: none;">
+                                            <div class="plan-button"
+                                                 th:onclick="|javascript:
+                                                                        var update = document.getElementById(${comment.getCommentId()});
+                                                                        switch(update.style.display){
+                                                                            case 'none':update.style.display='block';break;
+                                                                            case 'block':update.style.display='none';break;
+                                                                        }
+                                                 |">
+                                                <span>修改</span>
+                                            </div>
+                                        </a>
+                                        <a onclick="return del()"
+                                                th:href="@{/deletePlan/{id}(id=1)}"
+                                                style="text-decoration: none;">
+                                            <div class="plan-button"><span>删除
+                                            </span></div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="content-details-update" th:id="${comment.getCommentId()}"
+                                     style="display: none;">
+                                    <form th:action="@{/updateComment}" method="post" id="updateCommentForm">
+                                        <div class="content-details-textarea">
+                                            <textarea id="comment" name="content"
+                                                      th:text="${comment.getContent()}"></textarea>
+                                            <input type="hidden" name="commentId"
+                                                   th:value="${comment.getCommentId()}">
+                                            <input type="hidden" name="planId"
+                                                   th:value="${comment.getPlanId()}">
+                                            <input type="hidden" name="userId"
+                                                   th:value="${comment.getUserId()}">
+                                            <input type="hidden" name="thumb"
+                                                   th:value="${comment.getThumb()}">
+                                            <input type="hidden" name="createTime"
+                                                   th:value="${#dates.format(comment.getCreateTime(),'yyyy-MM-dd')}">
+                                        </div>
+                                        <div class="content-details-btn">
+                                            <a onclick="document:updateCommentForm.submit()" style="text-decoration:none;color:black;">
+                                                <div class="content-details-button">
+                                                    修改
+                                                </div>
+                                            </a>
+                                            <a onclick="ClearTextArea()" style="text-decoration:none;color:black;">
+                                                <div class="content-details-button">
+                                                    清除
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+    
+    
+    <footer>
+            <address>
+                Written by <a id="author">Leilei Song</a> .<br>
+                Visit me at mail:<br>
+                2661730542@qq.com
+            </address>
+            <div class="timestamp">
+                当前时间：<span></span>
+            </div>
+    </footer>
+</div>
+
+        <!-- 点击新增时将弹出一个较大的表单框用于新增方案 -->
+<div class="add" style="display: none;">
+    <div class="add-wrapper">
+
+        <section class="add-section">
+            <div class="section-top">
+                <h1>新增方案</h1>
+                <div class="section-svg">
+                    <svg t="1647503168256" class="back-svg" viewBox="0 0 1219 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="13022" width="48" height="48"><path d="M341.333333 585.142857L0 292.571429 341.333333 0v243.809524h487.619048c215.454476 0 390.095238 174.640762 390.095238 390.095238s-174.640762 390.095238-390.095238 390.095238H341.333333v-97.52381h487.619048c161.572571 0 292.571429-130.998857 292.571429-292.571428s-130.998857-292.571429-292.571429-292.571429H341.333333v243.809524z" p-id="13023"></path></svg>
+                </div>
+            </div>
+            <div class="add-content">
+                <form class="add-form" th:action="@{/addPlan}" method="post">
+                    <div class="add-top">
+
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">事件类型</span>
+                                <span class="add-date-wrapper">
+                                    <input type="hidden" name="userId" th:value="${session.user.getUserId()}">
+                                    <input class="add-input"  required="" name="category" type="text" tabindex="1" placeholder="如：新冠肺炎" autofocus>
+                                  </span>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">时间</span>
+                                <span class="add-date-wrapper">
+                                    <input class="add-input"  required="" name="planTime" type="date"
+                                           tabindex="2" placeholder="When?">
+                                  </span>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">地点</span>
+                                <select id="province" required="" name="planProvince" runat="server"
+                                        onchange="selectprovince(this);" ></select>
+                                <select id="city"  required="" name="planCity" runat="server"
+                                        style="display: none;"></select>
+                            </label>
+                        </div>
+                    </div>
+                    <h3>属性</h3>
+                    <div class="add-left">
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">温度范围左</span>
+                                <input class="add-input" required=""   name="temp1" type="text" tabindex="1"
+                                       placeholder="℃" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">温度范围右</span>
+                                <input class="add-input" required=""   name="temp2" type="text" tabindex="1"
+                                       placeholder="℃" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">相对湿度左</span>
+                                <input class="add-input" required=""   name="humidity1" type="text" tabindex="1" placeholder="%" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">相对湿度右</span>
+                                <input class="add-input"  required=""  name="humidity2" type="text" tabindex="1" placeholder="%" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">二氧化氮含量</span>
+                                <input class="add-input"  required=""  name="no2Content" type="text" tabindex="1" placeholder="微克/立方米" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">天气</span>
+                                <div class="add-select-wrapper">
+                                    <span class="add-select">
+                                      <select name="weather" tabindex="3" required="" >
+                                        <option value="晴" selected>晴</option>
+                                        <option value="多云">多云</option>
+                                        <option value="阴">阴</option>
+                                        <option value="雨">雨</option>
+                                        <option value="雪">雪</option>
+                                      </select>
+                                    </span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <h3>要素</h3>
+                    <div class="add-right">
+
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">要素一</span>
+                                <input class="add-input" required=""   name="newCases" type="text"
+                                       tabindex="1" placeholder="如：新增确诊" autofocus>
+                            </label>
+                        </div>
+
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">要素二</span>
+                                <input class="add-input"  required=""  name="confirmedCases" type="text" tabindex="1" placeholder="如：现有确诊病例" autofocus>
+                            </label>
+                        </div>
+
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">要素三</span>
+                                <input class="add-input"  required=""  name="closeContact" type="text" tabindex="1" placeholder="如：密切接触者" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">要素四</span>
+                                <input class="add-input"  required=""  name="asymptomatic" type="text" tabindex="1" placeholder="如：无症状感染者" autofocus>
+                            </label>
+                        </div>
+                    </div>
+                    <h3>应急方案描述</h3>
+                    <div class="middle">
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">医疗</span>
+                                <textarea name="medical" required="" ></textarea>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">经济</span>
+                                <textarea name="transport" required="" ></textarea>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">民生</span>
+                                <textarea name="livelihood" required="" ></textarea>
+                            </label>
+                        </div>
+                    </div>
+                    <div></div>
+                    <h3>实施结果描述</h3>
+                    <div class="bottom">
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">事件防控影响</span>
+                                <textarea name="epidemic" required="" ></textarea>
+                            </label>
+                        </div>
+                        <div class="add-row degree">
+                            <label class="add-column">
+                                <span class="add-label">专家打分</span>
+                                <input class="add-input"  required=""  name="epidemicScore" type="text" tabindex="1" placeholder="十分制" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">经济影响</span>
+                                <textarea name="economic" required="" ></textarea>
+                            </label>
+                        </div>
+                        <div class="add-row degree">
+                            <label class="add-column">
+                                <span class="add-label">专家打分</span>
+                                <input class="add-input"  required=""  name="economicScore" type="text" tabindex="1" placeholder="十分制" autofocus>
+                            </label>
+                        </div>
+                        <div class="add-row">
+                            <label class="add-column">
+                                <span class="add-label">社会影响</span>
+                                <textarea name="social" required="" ></textarea>
+                            </label>
+                        </div>
+                        <div class="add-row degree">
+                            <label class="add-column">
+                                <span class="add-label">专家打分</span>
+                                <input class="add-input"  required=""  name="socialScore" type="text" tabindex="1" placeholder="十分制" autofocus>
+                            </label>
+                        </div>
+                    </div>
+
+                    <input class="button button-primary" type="submit" value="发布" tabindex="7">
+
+                </form>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+
+<script>
+    function del() {
+        if (confirm("您确定要取关吗？")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function ClearTextArea()
+    {
+        document.getElementById("comment").value="";
+    }
+    // Configuration
+      //地点选择器      
+    var list1 = new Array;
+    var list2 = new Array;
+    list1[list1.length] = "北京市";
+    list1[list1.length] = "天津市";
+    list1[list1.length] = "河北省";
+    list1[list1.length] = "山西省";
+    list1[list1.length] = "内蒙古";
+    list1[list1.length] = "辽宁省";
+    list1[list1.length] = "吉林省";
+    list1[list1.length] = "黑龙江省";
+    list1[list1.length] = "上海市";
+    list1[list1.length] = "江苏省";
+    list1[list1.length] = "浙江省";
+    list1[list1.length] = "安徽省";
+    list1[list1.length] = "福建省";
+    list1[list1.length] = "江西省";
+    list1[list1.length] = "山东省";
+    list1[list1.length] = "河南省";
+    list1[list1.length] = "湖北省";
+    list1[list1.length] = "湖南省";
+    list1[list1.length] = "广东省";
+    list1[list1.length] = "广西自治区";
+    list1[list1.length] = "海南省";
+    list1[list1.length] = "重庆市";
+    list1[list1.length] = "四川省";
+    list1[list1.length] = "贵州省";
+    list1[list1.length] = "云南省";
+    list1[list1.length] = "西藏自治区";
+    list1[list1.length] = "陕西省";
+    list1[list1.length] = "甘肃省";
+    list1[list1.length] = "青海省";
+    list1[list1.length] = "宁夏回族自治区";
+    list1[list1.length] = "新疆维吾尔自治区";
+    list1[list1.length] = "香港特别行政区";
+    list1[list1.length] = "澳门特别行政区";
+    list1[list1.length] = "台湾省";
+    list1[list1.length] = "其它";
+
+    list2[list2.length] = new Array("东城区", "西城区", "崇文区", "宣武区", "朝阳区", "丰台区", "石景山区", " 海淀区（中关村）", "门头沟区", "房山区", "通州区", "顺义区", "昌平区", "大兴区", "怀柔区", "平谷区", "密云县", "延庆县", " 其他");
+    list2[list2.length] = new Array("和平区", "河东区", "河西区", "南开区", "红桥区", "塘沽区", "汉沽区", "大港区",
+                "西青区", "津南区", "武清区", "蓟县", "宁河县", "静海县", "其他");
+    list2[list2.length] = new Array("石家庄市", "张家口市", "承德市", "秦皇岛市", "唐山市", "廊坊市", "衡水市",
+                "沧州市", "邢台市", "邯郸市", "保定市", "其他");
+    list2[list2.length] = new Array("太原市", "朔州市", "大同市", "长治市", "晋城市", "忻州市", "晋中市", "临汾市",
+                "吕梁市", "运城市", "其他");
+    list2[list2.length] = new Array("呼和浩特市", "包头市", "赤峰市", "呼伦贝尔市", "鄂尔多斯市", "乌兰察布市",
+                "巴彦淖尔市", "兴安盟", "阿拉善盟", "锡林郭勒盟", "其他");
+    list2[list2.length] = new Array("沈阳市", "朝阳市", "阜新市", "铁岭市", "抚顺市", "丹东市", "本溪市", "辽阳市",
+                "鞍山市", "大连市", "营口市", "盘锦市", "锦州市", "葫芦岛市", "其他");
+    list2[list2.length] = new Array("长春市", "白城市", "吉林市", "四平市", "辽源市", "通化市", "白山市", "延边朝鲜族自治州", "其他");
+    list2[list2.length] = new Array("哈尔滨市", "七台河市", "黑河市", "大庆市", "齐齐哈尔市", "伊春市", "佳木斯市",
+                "双鸭山市", "鸡西市", "大兴安岭地区(加格达奇)", "牡丹江", "鹤岗市", "绥化市　", "其他");
+    list2[list2.length] = new Array("黄浦区", "卢湾区", "徐汇区", "长宁区", "静安区", "普陀区", "闸北区", "虹口区",
+                "杨浦区", "闵行区", "宝山区", "嘉定区", "浦东新区", "金山区", "松江区", "青浦区", "南汇区", "奉贤区", "崇明县", "其他");
+    list2[list2.length] = new Array("南京市", "徐州市", "连云港市", "宿迁市", "淮安市", "盐城市", "扬州市", "泰州市",
+                "南通市", "镇江市", "常州市", "无锡市", "苏州市", "其他");
+    list2[list2.length] = new Array("杭州市", "湖州市", "嘉兴市", "舟山市", "宁波市", "绍兴市", "衢州市", "金华市",
+                "台州市", "温州市", "丽水市", "其他");
+    list2[list2.length] = new Array("合肥市", "宿州市", "淮北市", "亳州市", "阜阳市", "蚌埠市", "淮南市", "滁州市",
+                "马鞍山市", "芜湖市", "铜陵市", "安庆市", "黄山市", "六安市", "巢湖市", "池州市", "宣城市", "其他");
+    list2[list2.length] = new Array("福州市", "南平市", "莆田市", "三明市", "泉州市", "厦门市", "漳州市", "龙岩市", "宁德市", "其他");
+    list2[list2.length] = new Array("南昌市", "九江市", "景德镇市", "鹰潭市", "新余市", "萍乡市", "赣州市", "上饶市",
+                "抚州市", "宜春市", "吉安市", "其他");
+    list2[list2.length] = new Array("济南市", "聊城市", "德州市", "东营市", "淄博市", "潍坊市", "烟台市", "威海市",
+                "青岛市", "日照市", "临沂市", "枣庄市", "济宁市", "泰安市", "莱芜市", "滨州市", "菏泽市", "其他");
+    list2[list2.length] = new Array("郑州市", "三门峡市", "洛阳市", "焦作市", "新乡市", "鹤壁市", "安阳市", "濮阳市",
+                "开封市", "商丘市", "许昌市", "漯河市", "平顶山市", "南阳市", "信阳市", "周口市", "驻马店市", "其他");
+    list2[list2.length] = new Array("武汉市", "十堰市", "襄樊市", "荆门市", "孝感市", "黄冈市", "鄂州市", "黄石市",
+                "咸宁市", "荆州市", "宜昌市", "随州市", "恩施土家族苗族自治州", "仙桃市", "天门市", "潜江市", "神农架林区", "其他");
+    list2[list2.length] = new Array("长沙市", "张家界市", "常德市", "益阳市", "岳阳市", "株洲市", "湘潭市", "衡阳市",
+                "郴州市", "永州市", "邵阳市", "怀化市", "娄底市", "湘西土家族苗族自治州", "其他");
+    list2[list2.length] = new Array("广州市", "清远市", "韶关市", "河源市", "梅州市", "潮州市", "汕头市", "揭阳市",
+                "汕尾市", " 惠州市", "东莞市", "深圳市", "珠海市", "中山市", "江门市", "佛山市", "肇庆市", "云浮市",
+                "阳江市", "茂名市", "湛江市", " 其他");
+    list2[list2.length] = new Array("南宁市", "桂林市", "柳州市", "梧州市", "贵港市", "玉林市", "钦州市", "北海市",
+                "防城港市", "崇左市", "百色市", "河池市", "来宾市", "贺州市", "其他");
+    list2[list2.length] = new Array("海口市", "三亚市", "其他");
+    list2[list2.length] = new Array("渝中区", "大渡口区", "江北区", "沙坪坝区", "九龙坡区", "南岸区", "北碚区",
+                "万盛区", "双桥区", "渝北区", "巴南区", "万州区", "涪陵区", "黔江区", "长寿区", "合川市", "永川市",
+                "江津市", "南川市", "綦江县", "潼南县", "铜梁县", "大足县", "璧山县", "垫江县", "武隆县", "丰都县",
+                "城口县", "开县", "巫溪县", "巫山县", "奉节县", "云阳县", "忠县", "石柱土家族自治县", "彭水苗族土家族自治县",
+                "酉阳土家族苗族自治县", "秀山土家族苗族自治县", "其他");
+    list2[list2.length] = new Array("成都市", "广元市", "绵阳市", "德阳市", "南充市", "广安市", "遂宁市",
+                "内江市", "乐山市", "自贡市", "泸州市", "宜宾市", "攀枝花市", "巴中市", "资阳市", "眉山市", "雅安",
+                "阿坝藏族羌族自治州", "甘孜藏族自治州", "凉山彝族自治州县", "其他");
+    list2[list2.length] = new Array("贵阳市", "六盘水市", "遵义市", "安顺市", "毕节地区", "铜仁地区",
+                "黔东南苗族侗族自治州", "黔南布依族苗族自治州", "黔西南布依族苗族自治州", "其他");
+    list2[list2.length] = new Array("昆明市", "曲靖市", "玉溪市", "保山市", "昭通市", "丽江市", "普洱市",
+                "临沧市", "宁德市", "德宏傣族景颇族自治州", "怒江傈僳族自治州", "楚雄彝族自治州", "红河哈尼族彝族自治州",
+                "文山壮族苗族自治州", "大理白族自治州", "迪庆藏族自治州", "西双版纳傣族自治州", "其他");
+    list2[list2.length] = new Array("拉萨市", "那曲地区", "昌都地区", "林芝地区", "山南地区", "日喀则地区", "阿里地区", "其他");
+    list2[list2.length] = new Array("西安市", "延安市", "铜川市", "渭南市", "咸阳市", "宝鸡市", "汉中市", "安康市", "商洛市", "其他");
+    list2[list2.length] = new Array("兰州市 ", "嘉峪关市", "金昌市", "白银市", "天水市", "武威市", "酒泉市",
+                "张掖市", "庆阳市", "平凉市", "定西市", "陇南市", "临夏回族自治州", "甘南藏族自治州", "其他");
+    list2[list2.length] = new Array("西宁市", "海东地区", "海北藏族自治州", "黄南藏族自治州", "玉树藏族自治州",
+                "海南藏族自治州", "果洛藏族自治州", "海西蒙古族藏族自治州", "其他");
+    list2[list2.length] = new Array("银川市", "石嘴山市", "吴忠市", "固原市", "中卫市", "其他");
+    list2[list2.length] = new Array("乌鲁木齐市", "克拉玛依市", "喀什地区", "阿克苏地区", "和田地区", "吐鲁番地区",
+                "哈密地区", "塔城地区", "阿勒泰地区", "克孜勒苏柯尔克孜自治州", "博尔塔拉蒙古自治州",
+                "昌吉回族自治州伊犁哈萨克自治州", "巴音郭楞蒙古自治州", "河子市", "阿拉尔市", "五家渠市", "图木舒克市", "其他");
+    list2[list2.length] = new Array("香港", "其他");
+    list2[list2.length] = new Array("澳门", "其他");
+    list2[list2.length] = new Array("台湾", "其他");
+
+    var ddlProvince = document.getElementById("province");
+    var ddlCity = document.getElementById("city");
+    var ddlProvince1 = document.getElementById("province1");
+    var ddlCity1 = document.getElementById("city1");
+
+    for(var i =0;i<list1.length; i++)
+    {
+        var option = document.createElement("option");
+        var option1 = document.createElement("option");
+        option.appendChild(document.createTextNode(list1[i]));
+        option1.appendChild(document.createTextNode(list1[i]));
+        option.value = list1[i];
+        option1.value = list1[i];
+        ddlProvince.appendChild(option);
+        ddlProvince1.appendChild(option1);
+        //city initialize
+        var firstprovince = list2[0];
+        // for (var j = 0; j < firstprovince.length; j++) {
+        //     var optioncity = document.createElement("option");
+        //     var optioncity1 = document.createElement("option1");
+        //     optioncity.appendChild(document.createTextNode(firstprovince[j]));
+        //     optioncity1.appendChild(document.createTextNode(firstprovince[j]));
+        //     optioncity.value = firstprovince[j];
+        //     optioncity1.value = firstprovince[j];
+        //     ddlCity.appendChild(optioncity);
+        //     ddlCity1.appendChild(optioncity1);
+        // }
+    }
+
+    function indexof(obj,value)
+    {
+        var k=0;
+        for(;k<obj.length;k++)
+        {
+            if(obj[k] == value)
+                return k;
+        }
+        return k;
+    }
+
+    function selectprovince(obj) {
+        ddlCity.options.length = 0;//clear
+        ddlCity1.options.length = 0;//clear
+        var index = indexof(list1,obj.value);
+        var list2element = list2[index];
+        for(var i =0;i<list2element.length; i++)
+        {
+            var option = document.createElement("option");
+            var option1 = document.createElement("option");
+            option.appendChild(document.createTextNode(list2element[i]));
+            option1.appendChild(document.createTextNode(list2element[i]));
+            option.value = list2element[i];
+            option1.value = list2element[i];
+            ddlCity.appendChild(option);
+            ddlCity1.appendChild(option1);
+        }
+        ddlCity.style.display="block";
+        ddlCity1.style.display="block";
+    }
+    
+  </script>             
+<script>
+    window.onload = function(){
+        
+        var span1 = document.getElementsByClassName('timestamp')[0].getElementsByTagName('span')[0];
+        var dateStr = formatDate();
+        // 将时间放置到span内
+        span1.innerText = dateStr;
+        // 每隔一秒，再放置一次最新的时间
+        setInterval(function(){
+            span1.innerText = formatDate(0);
+        },1000);
+        //格式化年月日时分秒 
+        function formatDate(index){
+            var date = new Date();
+            var year = date.getFullYear();
+            var month = date.getMonth()+1;
+            month = month<10?'0'+month:month;
+            var day = date.getDate();
+            day = day<10?'0'+day:day;
+            var hours = date.getHours();
+            hours = hours<10?'0'+hours:hours;
+            var minutes = date.getMinutes();
+            minutes = minutes<10?'0'+minutes:minutes;
+            var seconds = date.getSeconds();
+            seconds = seconds<10?'0'+seconds:seconds;
+            // 2019-07-23 09:40:30
+            if(index==0){
+                return year+'-'+month+'-'+day+' '+hours+':'+minutes+':'+seconds;
+            }else{
+            return year+'-'+month+'-'+day;
+            }
+        }
+
+
+
+        var add = document.getElementsByClassName("add")[0];
+        // var update = document.getElementsByClassName("update")[0];
+
+        var addbtn = document.getElementsByClassName("add-btn")[0];
+        // var updbtn = document.getElementsByClassName("notification-btn")[0];
+        var backsvg = document.getElementsByClassName("back-svg")[0];
+        // var backsvg1 = document.getElementsByClassName("svg")[1];
+
+        var section = document.getElementsByClassName("projects-section")[0];
+
+        addbtn.onclick = function (){
+            console.log("点击add");
+            if(add.style.display=="block"){
+                add.style.display="none";
+                section.style.filter="none";
+            }else{
+                add.style.display="block";
+                section.style.filter="blur(3px)";
+            }
+        }
+        // updbtn.onclick = function (){
+        //     if(update.style.display=="block"){
+        //         update.style.display="none";
+        //         section.style.filter="none";
+        //     }else{
+        //         update.style.display="block";
+        //         section.style.filter="blur(3px)";
+        //     }
+        // }
+        backsvg.onclick = function (){
+            if(add.style.display=="block"){
+                add.style.display="none";
+                section.style.filter="none";
+            }else{
+                add.style.display="block";
+                section.style.filter="blur(3px)";
+            }
+        }
+        // backsvg1.onclick = function (){
+        //     if(update.style.display=="block"){
+        //         update.style.display="none";
+        //         section.style.filter="none";
+        //     }else{
+        //         update.style.display="block";
+        //         section.style.filter="blur(3px)";
+        //     }
+        // }
+
+
+        var per1 = document.getElementsByClassName("personal-button")[0];
+        var per2 = document.getElementsByClassName("personal-button")[1];
+        var per3 = document.getElementsByClassName("personal-button")[2];
+        var plans = document.getElementById("plans");
+        var news = document.getElementById("news");
+        var comments = document.getElementById("comments");
+
+        function personal(num){
+            switch (num){
+                case
+                0:plans.style.display="block";news.style.display="none";comments.style.display="none";break;
+                case 1:plans.style.display="none";news.style.display="block";comments.style.display="none";break;
+                case 2:plans.style.display="none";news.style.display="none";comments.style.display="block";break;
+            }
+        }
+        per1.onclick=function (){
+            personal(0);
+        }
+        per2.onclick=function (){
+            personal(1);
+        }
+        per3.onclick=function (){
+            personal(2);
+        }
+
+    }
+</script>
+</body>
+</html>

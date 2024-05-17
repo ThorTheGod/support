@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xidian.support.mapper.InfoMapper">
+
+    <insert id="addInfo" parameterType="com.xidian.support.pojo.Info" useGeneratedKeys="true"
+            keyProperty="infoId">
+        insert into info(user_id,province,city,create_time,title,brief,content)
+        values(#{userId},#{province},#{city},#{createTime},#{title},#{brief},#{content});
+    </insert>
+
+    <delete id="deleteInfo" parameterType="int">
+        delete from info where info_id=#{infoId};
+    </delete>
+
+    <update id="updateInfo" parameterType="com.xidian.support.pojo.Info">
+        update info set
+        user_id=#{userId},province=#{province},city=#{city},create_time=#{createTime},title=#{title},brief=#{brief},content=#{content}
+        where plan_id=#{planId};
+    </update>
+
+    <select id="findInfoByInfoId" parameterType="int" resultType="com.xidian.support.pojo.Info">
+        select * from info where info_id=#{infoId};
+    </select>
+
+    <select id="getAllInfo" resultType="com.xidian.support.pojo.Info">
+        select * from info order by create_time DESC;
+    </select>
+
+    <select id="getInfoByUserId" parameterType="int" resultType="com.xidian.support.pojo.Info">
+        select * from info where user_id=#{userId} order by create_time DESC;
+    </select>
+
+    <select id="getInfoByProvince" parameterType="String" resultType="com.xidian.support.pojo.Info">
+        select * from info where province=#{province} order by create_time DESC;
+    </select>
+
+    <select id="getInfoByCity" parameterType="String" resultType="com.xidian.support.pojo.Info">
+        select * from info where city=#{city} order by create_time DESC;
+    </select>
+    
+</mapper>

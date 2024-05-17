@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xidian.support.mapper.PlanMapper">
+
+    <insert id="addPlan" parameterType="com.xidian.support.pojo.Plan" keyProperty="planId"
+            useGeneratedKeys="true" >
+        insert into plan
+        (user_id,category,plan_province,plan_city,plan_time,temp1,temp2,humidity1,humidity2,no2_content,weather,new_cases,
+        confirmed_cases,close_contact,asymptomatic,medical,transport,livelihood,epidemic,epidemic_score,
+        economic,economic_score,social,social_score)
+        values
+        (#{userId},#{category},#{planProvince},#{planCity},#{planTime},#{temp1},#{temp2},#{humidity1},#{humidity2},#{no2Content},#{weather},#{newCases},#{confirmedCases},#{closeContact},#{asymptomatic},#{medical},#{transport},#{livelihood},#{epidemic},#{epidemicScore},#{economic},#{economicScore},#{social},#{socialScore});
+    </insert>
+
+    <delete id="deletePlan" parameterType="int">
+        delete from plan where plan_id=#{planId};
+    </delete>
+
+    <update id="updatePlan" parameterType="com.xidian.support.pojo.Plan">
+        update plan set user_id =
+                            #{userId},category=#{category},plan_province=#{planProvince},plan_city=#{planCity},plan_time=
+        #{planTime},temp1=#{temp1},temp2=#{temp2},humidity1=#{humidity1},humidity2=#{humidity2},no2_content=#{no2Content},weather=#{weather},
+        new_cases=#{newCases},confirmed_cases=#{confirmedCases},close_contact=#{closeContact},asymptomatic=#{asymptomatic},
+        medical=#{medical},transport=#{transport},livelihood=#{livelihood},epidemic=#{epidemic},epidemic_score=#{epidemicScore},
+        economic=#{economic},economic_score=#{economicScore},social=#{social},social_score=#{socialScore}
+        where plan_id=#{planId};
+    </update>
+    
+    <select id="findPlanByPlanId" parameterType="int" resultType="com.xidian.support.pojo.Plan">
+        select * from plan where plan_id=#{planId}  order by
+            plan_time DESC;
+    </select>
+
+    <select id="findPlanByUserId" parameterType="int" resultType="com.xidian.support.pojo.Plan">
+        select * from plan where user_id=#{userId}  order by
+            plan_time DESC;
+    </select>
+
+    <select id="findPlanByTime" resultType="com.xidian.support.pojo.Plan">
+        select * from plan where plan_time>=#{preTime} and plan_time <![CDATA[<=]]> #{sufTime} order by
+            plan_time DESC;
+    </select>
+    
+    <select id="getAllPlan" resultType="com.xidian.support.pojo.Plan">
+        select * from plan  order by
+            plan_time DESC;
+    </select>
+    <select id="findPlanByCategory" resultType="com.xidian.support.pojo.Plan">
+        select * from plan  where category=#{category} order by
+            plan_time DESC;
+    </select>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xidian.support.mapper.UserMapper">
+
+    <insert id="addUser" parameterType="com.xidian.support.pojo.User" useGeneratedKeys="true"
+            keyProperty="userId">
+        insert into user(username,email,password,head_img,priority)
+        values(#{username},#{email},#{password},#{headImg},#{priority});
+    </insert>
+
+    <delete id="deleteUser" parameterType="int">
+        delete from user where user_id=#{userId};
+    </delete>
+
+    <update id="updateUser" parameterType="com.xidian.support.pojo.User">
+        update user set
+                        username=#{username},email=#{email},password=#{password},head_img=#{headImg},priority=#{priority}
+        where
+        user_id=#{userId};
+    </update>
+
+    <select id="findUserByUserId" parameterType="int" resultType="com.xidian.support.pojo.User">
+        select * from user where user_id=#{userId};
+    </select>
+
+    <select id="findUserByUsername" parameterType="String" resultType="com.xidian.support.pojo.User">
+        select * from user where username=#{username};
+    </select>
+
+    <select id="getAllUser" resultType="com.xidian.support.pojo.User">
+        select * from user;
+    </select>
+
+</mapper>

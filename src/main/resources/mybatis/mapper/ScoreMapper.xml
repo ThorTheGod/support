@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xidian.support.mapper.ScoreMapper">
+    
+    <insert id="addScore" parameterType="com.xidian.support.pojo.Score" useGeneratedKeys="true"
+            keyProperty="scoreId">
+        insert into score (plan_id,infancy_score,outbreak_score,recovery_score) values
+        (#{planId},#{infancyScore},#{outbreakScore},#{recoveryScore});
+    </insert>
+
+    <update id="updateScore" parameterType="com.xidian.support.pojo.Score">
+        update score set plan_id=#{planId},infancy_score=#{infancyScore},outbreak_score=#{outbreakScore},recovery_score=#{recoveryScore} where score_id =
+        #{scoreId};
+    </update>
+    
+    <select id="findScoreByPlanId" parameterType="int" resultType="com.xidian.support.pojo.Score">
+        select * from score where plan_id=#{planId};
+    </select>
+    
+    <select id="getAllScore" resultType="com.xidian.support.pojo.Score">
+        select * from score;
+    </select>
+    
+</mapper>
